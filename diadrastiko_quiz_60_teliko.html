@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Διαδραστικό Κουίζ 60 Ερωτήσεων</title>
+<style>
+:root {
+  --bg:#f6f7fb; --card:#fff; --ink:#1f2430; --muted:#667085; --accent:#315f43;
+  --ok:#197a38; --bad:#b3261e; --soft:#e8f1eb; --line:#dfe3ea;
+}
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif; background:var(--bg); color:var(--ink); }
+header { background:linear-gradient(135deg,#315f43,#789875); color:white; padding:28px 18px; }
+.wrap { max-width:1000px; margin:0 auto; }
+h1 { margin:0 0 6px; font-size:clamp(24px,4vw,38px); }
+.subtitle { margin:0; opacity:.95; line-height:1.4; }
+.panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; margin:18px 0; box-shadow:0 4px 18px rgba(20,30,50,.06); }
+.topbar { position:sticky; top:0; z-index:5; background:rgba(246,247,251,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.topbar .wrap { display:flex; gap:12px; align-items:center; padding:10px 18px; flex-wrap:wrap; }
+.progress { flex:1; height:12px; border-radius:999px; background:#e2e6ee; overflow:hidden; min-width:180px; }
+.progress span { display:block; height:100%; width:0; background:var(--accent); transition:.25s; }
+.badge { background:var(--soft); color:#173b25; padding:6px 10px; border-radius:999px; font-weight:800; font-size:14px; }
+main { padding:0 18px 32px; }
+.sectionTitle { margin:28px 0 10px; color:#315f43; font-size:22px; }
+.q { border-left:6px solid var(--accent); }
+.qhead { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+.qnum { color:var(--muted); font-weight:800; }
+.question { font-size:18px; font-weight:780; margin:8px 0 14px; line-height:1.4; }
+.options { display:grid; gap:9px; }
+label.option { display:flex; gap:10px; align-items:flex-start; background:#fafbfc; border:1px solid var(--line); padding:11px 12px; border-radius:12px; cursor:pointer; }
+label.option:hover { border-color:#9eb2a5; }
+input[type=text] { width:100%; padding:12px; border:1px solid var(--line); border-radius:12px; font-size:16px; }
+select { width:100%; padding:10px; border:1px solid var(--line); border-radius:10px; font-size:15px; background:white; }
+.matchrow, .catrow, .orderrow { display:grid; grid-template-columns:1fr 1.4fr; gap:12px; align-items:center; padding:9px 0; border-bottom:1px dashed #e2e5ea; }
+.term { font-weight:800; }
+.actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+button { border:0; background:var(--accent); color:white; padding:10px 14px; border-radius:12px; font-weight:800; cursor:pointer; }
+button.secondary { background:#e7ece8; color:#173b25; }
+.feedback { margin-top:12px; padding:12px; border-radius:12px; display:none; line-height:1.45; }
+.feedback.ok { display:block; background:#eaf6ee; color:#0e5f2a; border:1px solid #b9e1c4; }
+.feedback.bad { display:block; background:#fdeeee; color:#8c1d18; border:1px solid #f3c2bd; }
+.explain { color:#3d4658; margin-top:4px; }
+.scorebox { text-align:center; }
+.scorebig { font-size:42px; font-weight:900; color:#315f43; }
+.small { color:var(--muted); font-size:14px; }
+.hidden { display:none; }
+.footerNote { color:#5e6678; font-size:14px; text-align:center; margin-top:22px; }
+@media(max-width:650px) { .matchrow,.catrow,.orderrow { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Διαδραστικό Κουίζ 60 Ερωτήσεων</h1>
+  <p class="subtitle">Μέτρια δυσκολία</p>
+</div></header>
+<div class="topbar"><div class="wrap">
+  <div class="badge" id="scoreBadge">Σκορ: 0/0</div>
+  <div class="progress"><span id="bar"></span></div>
+  <button class="secondary" onclick="resetQuiz()">Επανεκκίνηση</button>
+</div></div>
+<main class="wrap">
+  
+  <div id="quiz"></div>
+  <section class="panel scorebox hidden" id="finalBox">
+    <div class="scorebig" id="finalScore"></div>
+    <p id="finalMsg"></p>
+    <button onclick="resetQuiz()">Ξαναπροσπάθησε</button>
+  </section>
+  <p class="footerNote">Αυτόνομο HTML αρχείο για χρήση σε browser ή ανάρτηση σε GitHub Pages.</p>
+</main>
+<script>
+const QUIZ = {"title": "Διαδραστικό Κουίζ 60 Ερωτήσεων – Ισορροπημένη Ποικιλία", "subtitle": "Μέτρια δυσκολία · λιγότερες πολλαπλής επιλογής, όχι μηδενικές · φυσικοί ομιλητές", "questions": [{"type": "mcq", "section": "Α. Λεξιλόγιο", "q": "Ποια διατύπωση αποδίδει ακριβέστερα τη διαφορά «παιδείας» και «εκπαίδευσης»;", "options": ["Η παιδεία είναι ευρύτερη καλλιέργεια, ενώ η εκπαίδευση οργανωμένη θεσμική διαδικασία μάθησης.", "Η παιδεία είναι αποκλειστικά σχολική γνώση, ενώ η εκπαίδευση γενική κουλτούρα.", "Η παιδεία δηλώνει επαγγελματική εξειδίκευση, ενώ η εκπαίδευση ηθική αγωγή.", "Η παιδεία αφορά μόνο το περιεχόμενο, ενώ η εκπαίδευση μόνο τους φορείς."], "answers": [0], "explain": "Η παιδεία είναι ευρύτερη έννοια· η εκπαίδευση συνδέεται κυρίως με θεσμική μάθηση."}, {"type": "cloze", "section": "Α. Λεξιλόγιο", "q": "Συμπλήρωσε με μία λέξη: Στη φράση «η αντίληψη πρεσβεύει την αυτονομία», το «πρεσβεύει» σημαίνει κυρίως __________.", "answers": ["υποστηρίζει", "εκφράζει", "προασπίζεται"], "explain": "Αποδεκτά: υποστηρίζει, εκφράζει, προασπίζεται."}, {"type": "cloze", "section": "Α. Λεξιλόγιο", "q": "Συμπλήρωσε: Η λόγια φράση «υπέρ το δέον» δηλώνει κάτι που γίνεται πέρα από το __________ μέτρο.", "answers": ["δέον", "πρέπον", "αναγκαίο", "αρμόζον"], "explain": "Η φράση δηλώνει υπερβολή σε σχέση με το πρέπον/αναγκαίο μέτρο."}, {"type": "mcq", "section": "Α. Λεξιλόγιο", "q": "Ποιο είναι το καταλληλότερο αντώνυμο του «πολύτιμος» στο πλαίσιο «πολύτιμο εργαλείο»;", "options": ["ασήμαντος", "ευτελής", "δευτερεύων", "αναλώσιμος"], "answers": [0], "explain": "Στο συγκεκριμένο πλαίσιο το «ασήμαντος» αποδίδει καλύτερα την αντίθετη αξιολογική σημασία."}, {"type": "categorize", "section": "Α. Λεξιλόγιο", "q": "Κατάταξε τις λέξεις στη σωστή κατηγορία.", "categories": ["Θετική χροιά", "Αρνητική χροιά"], "items": [["διαλλακτικότητα", "Θετική χροιά"], ["αλληλοσεβασμός", "Θετική χροιά"], ["φανατισμός", "Αρνητική χροιά"], ["δογματισμός", "Αρνητική χροιά"], ["λαϊκισμός", "Αρνητική χροιά"]], "explain": "Οι λέξεις αξιολογούνται με βάση το συνηθισμένο κοινωνικοπολιτικό τους φορτίο."}, {"type": "cloze", "section": "Α. Λεξιλόγιο", "q": "Συμπλήρωσε: Ο «σκοπός» δηλώνει συνήθως γενικότερη επιδίωξη, ενώ ο «στόχος» πιο __________ αποτέλεσμα.", "answers": ["συγκεκριμένο", "συγκεκριμενο"], "explain": "Η βασική διάκριση αφορά τον βαθμό γενικότητας."}, {"type": "cloze", "section": "Α. Λεξιλόγιο", "q": "Συμπλήρωσε: Το «υπόβαθρο» σημαίνει τη θεωρητική ή εννοιολογική __________ πάνω στην οποία στηρίζεται κάτι.", "answers": ["βάση", "βαση"], "explain": "Υπόβαθρο = βάση/θεμέλιο."}, {"type": "mcq", "section": "Α. Λεξιλόγιο", "q": "Ποια διατύπωση αποδίδει ακριβέστερα τη λέξη «επιπτώσεις»;", "options": ["συνέπειες, συνήθως με αρνητική χροιά", "αποτελέσματα με αποκλειστικά θετική χροιά", "ουδέτερες αλλαγές χωρίς αξιολόγηση", "συμπεράσματα μιας μελέτης"], "answers": [0], "explain": "Οι επιπτώσεις δηλώνουν συνήθως αρνητικές συνέπειες."}, {"type": "multi", "section": "Α. Λεξιλόγιο", "q": "Επίλεξε τις λέξεις που μπορούν να αποδώσουν το «ωφέλιμος» σε κατάλληλα συμφραζόμενα.", "options": ["επωφελής", "λυσιτελής", "χρήσιμος", "επιζήμιος", "βλαπτικός"], "answers": [0, 1, 2], "explain": "Οι τρεις πρώτες δηλώνουν ωφέλεια."}, {"type": "mcq", "section": "Α. Λεξιλόγιο", "q": "Η «χειραγώγηση» δηλώνει κυρίως:", "options": ["καθοδήγηση με σκοπό τον έλεγχο", "καθοδήγηση προς την αυτονομία", "ουδέτερη εκπαιδευτική οργάνωση", "ελεύθερη αναζήτηση γνώσης"], "answers": [0], "explain": "Η χειραγώγηση έχει αρνητική χροιά ελέγχου και ετεροκαθορισμού."}, {"type": "categorize", "section": "Α. Λεξιλόγιο", "q": "Κατάταξε τις προτάσεις ανάλογα με τη σωστή χρήση «ως» ή «σαν».", "categories": ["Ιδιότητα/ρόλος", "Παρομοίωση"], "items": [["Λειτουργεί ως καθοδηγητής.", "Ιδιότητα/ρόλος"], ["Μίλησε ως εκπρόσωπος.", "Ιδιότητα/ρόλος"], ["Η τεχνολογία είναι σαν σφυρί.", "Παρομοίωση"], ["Φέρθηκε σαν αυθεντία.", "Παρομοίωση"]], "explain": "Το «ως» δηλώνει συχνά ιδιότητα, ενώ το «σαν» παρομοίωση."}, {"type": "match", "section": "Α. Λεξιλόγιο", "q": "Αντιστοίχισε την καθημερινή φράση με λόγια ισοδύναμη έκφραση.", "pairs": [["για παράδειγμα", "επί παραδείγματι"], ["από την αρχή", "εξ αρχής"], ["από παιδική ηλικία", "νηπιόθεν"], ["πάρα πολύ", "υπέρ το δέον"]], "explain": "Οι λόγιες εκφράσεις έχουν υψηλότερο ύφος."}, {"type": "cloze", "section": "Α. Λεξιλόγιο", "q": "Συμπλήρωσε: Η σχέση των λέξεων «ίντερνετ» και «διαδίκτυο» είναι σχέση __________.", "answers": ["συνωνυμίας", "συνωνυμιας"], "explain": "Οι λέξεις λειτουργούν ως συνώνυμες, με υφολογική διαφορά."}, {"type": "tf", "section": "Α. Λεξιλόγιο", "q": "Στη φράση «ο ρόλος της εκπαίδευσης», η λέξη «ρόλος» σημαίνει κυρίως θεατρικό πρόσωπο.", "answer": false, "explain": "Εδώ σημαίνει λειτουργία ή αποστολή."}, {"type": "mcq", "section": "Α. Λεξιλόγιο", "q": "Ποια είναι η πιο καθιερωμένη σύναψη;", "options": ["διαμόρφωση της προσωπικότητας", "σύνθεση της προσωπικότητας", "διάπλαση της πληροφορίας", "καλλιέργεια του συστήματος"], "answers": [0], "explain": "Η φράση «διαμόρφωση της προσωπικότητας» είναι η καταλληλότερη εδώ."}, {"type": "match", "section": "Α. Λεξιλόγιο", "q": "Αντιστοίχισε τη λέξη με τη σύντομη ερμηνεία.", "pairs": [["μεσσιανισμός", "προσδοκία σωτηρίας από ένα πρόσωπο ή δύναμη"], ["διαλλακτικότητα", "διάθεση συνεννόησης και υποχώρησης"], ["αποστήθιση", "μηχανική απομνημόνευση"], ["αυθεντία", "πηγή κύρους που θεωρείται δύσκολα αμφισβητήσιμη"]], "explain": "Οι έννοιες εξετάζουν το ειδικό λεξιλόγιο της ενότητας."}, {"type": "categorize", "section": "Α. Λεξιλόγιο", "q": "Κατάταξε τις λέξεις ως πιο επίσημες/λόγιες ή πιο καθημερινές.", "categories": ["Πιο επίσημη/λόγια", "Πιο καθημερινή"], "items": [["εργασία", "Πιο επίσημη/λόγια"], ["επί παραδείγματι", "Πιο επίσημη/λόγια"], ["δουλειά", "Πιο καθημερινή"], ["ας πούμε", "Πιο καθημερινή"]], "explain": "Η διάκριση αφορά κυρίως το ύφος."}, {"type": "cloze", "section": "Α. Λεξιλόγιο", "q": "Συμπλήρωσε: Το «σύστημα» είναι οργανωμένο __________ στοιχείων που συνδέονται μεταξύ τους.", "answers": ["σύνολο", "συνολο"], "explain": "Το σύστημα έχει οργάνωση και εσωτερικές σχέσεις."}, {"type": "tf", "section": "Α. Λεξιλόγιο", "q": "Η «αυτονόμηση» του μαθητή αντιτίθεται σημασιολογικά στη «χειραγώγηση».", "answer": true, "explain": "Η αυτονόμηση δηλώνει αυτοκαθορισμό, ενώ η χειραγώγηση ετεροκαθορισμό."}, {"type": "multi", "section": "Α. Λεξιλόγιο", "q": "Επίλεξε τις λέξεις που δηλώνουν ή προϋποθέτουν κριτική στάση.", "options": ["αμφισβήτηση", "αξιολόγηση", "επανεξέταση", "υποταγή", "άκριτη αποδοχή"], "answers": [0, 1, 2], "explain": "Η αμφισβήτηση, η αξιολόγηση και η επανεξέταση ανήκουν στο πεδίο της κριτικής σκέψης."}, {"type": "mcq", "section": "Β. Ετυμολογία", "q": "Ποια είναι τα βασικά συνθετικά της λέξης «χειραγώγηση»;", "options": ["χείρ + ἄγω", "χρεία + αγωγή", "χείρων + αγών", "χέρι + αγωγός"], "answers": [0], "explain": "Η λέξη συνδέεται με το χέρι και το ἄγω = οδηγώ."}, {"type": "cloze", "section": "Β. Ετυμολογία", "q": "Συμπλήρωσε: Στη λέξη «ανεξάρτητος» το α- είναι __________.", "answers": ["στερητικό", "στερητικο"], "explain": "Το στερητικό α- δηλώνει έλλειψη ή άρνηση."}, {"type": "categorize", "section": "Β. Ετυμολογία", "q": "Κατάταξε κάθε πρόθημα στη βασική σημασία του.", "categories": ["Άρνηση/έλλειψη", "Μαζί/από κοινού", "Κάτω/βάση", "Διάκριση/διαχωρισμός"], "items": [["α- στερητικό", "Άρνηση/έλλειψη"], ["συν-/συμ-", "Μαζί/από κοινού"], ["υπο-", "Κάτω/βάση"], ["δια-", "Διάκριση/διαχωρισμός"]], "explain": "Τα προθήματα αλλάζουν ή εξειδικεύουν τη σημασία της βάσης."}, {"type": "mcq", "section": "Β. Ετυμολογία", "q": "Ποιο ζεύγος είναι ομόρριζο;", "options": ["παιδεία – παιδαγωγός", "αξία – άξονας", "σκοπός – σκεπτικισμός", "νόμος – νόστιμος"], "answers": [0], "explain": "Οι λέξεις παιδεία και παιδαγωγός συνδέονται με τη ρίζα παιδ-."}, {"type": "tf", "section": "Β. Ετυμολογία", "q": "Η λέξη «υιοθετώ» συνδέθηκε αρχικά με την αναγνώριση κάποιου ως υιού.", "answer": true, "explain": "Από εκεί προκύπτει μεταφορικά το «υιοθετώ άποψη»."}, {"type": "cloze", "section": "Β. Ετυμολογία", "q": "Συμπλήρωσε: Το πρόθημα «δια-» σε λέξεις όπως «διακρίνω» δηλώνει συχνά __________ ή διαχωρισμό.", "answers": ["διάκριση", "διακριση"], "explain": "Το δια- μπορεί να δηλώνει διάκριση, διαχωρισμό ή κίνηση διά μέσου."}, {"type": "cloze", "section": "Β. Ετυμολογία", "q": "Συμπλήρωσε: Το πρόθημα «συν-/συμ-» δηλώνει συχνά ενέργεια από __________.", "answers": ["κοινού", "κοινου", "μαζί", "μαζι"], "explain": "Δηλώνει ένωση, σύμπραξη, από κοινού ενέργεια."}, {"type": "match", "section": "Β. Ετυμολογία", "q": "Αντιστοίχισε σύνθετη λέξη με πιθανή ετυμολογική ανάλυση.", "pairs": [["πληροφορία", "πλήρης + φέρω"], ["κατεύθυνση", "κατά + ευθύνω"], ["διάρκεια", "διά + αρκώ"], ["ανακατεύθυνση", "ανά + κατεύθυνση"]], "explain": "Ελέγχεται η αναγνώριση βασικών συνθετικών."}, {"type": "mcq", "section": "Β. Ετυμολογία", "q": "Η λέξη «σχολαστικός» συνδέεται ετυμολογικά με:", "options": ["σχολή", "σχόλιο", "σχέδιο", "σχίσμα"], "answers": [0], "explain": "Συνδέεται με τη σχολή· σήμερα σημαίνει υπερβολικά λεπτολόγος."}, {"type": "cloze", "section": "Β. Ετυμολογία", "q": "Συμπλήρωσε: Η λέξη «σχολαστικός» συνδέεται ετυμολογικά με τη λέξη __________.", "answers": ["σχολή", "σχολη"], "explain": "Σήμερα δηλώνει τον υπερβολικά λεπτολόγο."}, {"type": "multi", "section": "Β. Ετυμολογία", "q": "Επίλεξε λέξεις που είναι παράγωγες ή σύνθετες με βάση τη ρίζα παιδ-.", "options": ["παιδεία", "παιδαγωγός", "παιδευτικός", "παιδικός", "παιδεμός"], "answers": [0, 1, 2, 3], "explain": "Οι τέσσερις πρώτες συνδέονται με τη ρίζα παιδ-."}, {"type": "cloze", "section": "Β. Ετυμολογία", "q": "Συμπλήρωσε: Το «απόρριμμα» είναι αυτό που έχει __________.", "answers": ["απορριφθεί", "απορριφτει", "απορριφτεί", "απορριφθει"], "explain": "Συνδέεται με το ρήμα απορρίπτω."}, {"type": "tf", "section": "Β. Ετυμολογία", "q": "Το «υπο-» στη λέξη «υπόβαθρο» δηλώνει ότι κάτι λειτουργεί ως βάση ή βρίσκεται κάτω από κάτι άλλο.", "answer": true, "explain": "Αυτό είναι το βασικό νόημα του προθήματος εδώ."}, {"type": "match", "section": "Β. Ετυμολογία", "q": "Αντιστοίχισε τη λέξη με παράγωγο επίθετο.", "pairs": [["πνεύμα", "πνευματικός"], ["αξία", "αξιακός"], ["ιστορία", "ιστορικός"], ["πολιτισμός", "πολιτιστικός"]], "explain": "Τα παράγωγα επίθετα δηλώνουν σχέση με τη βάση."}, {"type": "cloze", "section": "Β. Ετυμολογία", "q": "Συμπλήρωσε: Το «εκ-/εξ-» σε λέξεις όπως «εκπαίδευση» και «εξέλιξη» μπορεί να δηλώνει κίνηση προς τα __________ ή ανάπτυξη ενέργειας.", "answers": ["έξω", "εξω"], "explain": "Το εκ-/εξ- συχνά δηλώνει έξοδο, αφετηρία ή ανάπτυξη διαδικασίας."}, {"type": "mcq", "section": "Γ. Γραμματική – Σύνταξη", "q": "Ποιος τύπος είναι σωστός στη φράση «Η επιστήμη δεν θα μπορούσε να προχωρήσει, αν δεν ___ στην αμφισβήτηση»;", "options": ["βασιζόταν", "βασίζονταν", "βασίζοντο", "βασίστηκε"], "answers": [0], "explain": "Το υποκείμενο είναι ενικός αριθμός: η επιστήμη βασιζόταν."}, {"type": "categorize", "section": "Γ. Γραμματική – Σύνταξη", "q": "Κατάταξε τους τύπους στη σωστή γραμματική κατηγορία.", "categories": ["Υπερθετικός επιθέτου", "Υποτακτική ενεστώτα", "Λόγια παγιωμένη φράση"], "items": [["ύψιστος", "Υπερθετικός επιθέτου"], ["να ερευνάς", "Υποτακτική ενεστώτα"], ["να δημιουργείς", "Υποτακτική ενεστώτα"], ["υπέρ το δέον", "Λόγια παγιωμένη φράση"]], "explain": "Η άσκηση εξετάζει αναγνώριση τύπων και φράσεων."}, {"type": "mcq", "section": "Γ. Γραμματική – Σύνταξη", "q": "Ποια είναι η καθιερωμένη λόγια φράση;", "options": ["υπέρ το δέον", "υπέρ του δέοντος", "υπέρ των δεόντων", "υπέρ τα δέοντα"], "answers": [0], "explain": "Η παγιωμένη νεοελληνική φράση είναι «υπέρ το δέον»."}, {"type": "tf", "section": "Γ. Γραμματική – Σύνταξη", "q": "Οι λέξεις «πού» και «πώς» τονίζονται όταν εισάγουν πλάγια ερώτηση.", "answer": true, "explain": "Π.χ. «δεν ξέρω πού πήγε», «ρώτησε πώς έγινε»."}, {"type": "match", "section": "Γ. Γραμματική – Σύνταξη", "q": "Αντιστοίχισε την πρόταση με τη λειτουργία της λέξης «ως» ή «σαν».", "pairs": [["Ενεργεί ως εκπρόσωπος.", "ιδιότητα/ρόλος"], ["Λειτουργεί ως καθοδηγητής.", "ιδιότητα/ρόλος"], ["Είναι σαν σφυρί.", "παρομοίωση"], ["Φέρθηκε σαν αυθεντία.", "παρομοίωση"]], "explain": "Το «ως» δηλώνει συχνά ιδιότητα, ενώ το «σαν» παρομοίωση."}, {"type": "cloze", "section": "Γ. Γραμματική – Σύνταξη", "q": "Συμπλήρωσε τον πιο λόγιο τύπο: Το έργο __________ από ειδική ομάδα.", "answers": ["παρήχθη", "παρηχθη"], "explain": "Ο τύπος «παρήχθη» είναι λόγιος και επίσημος."}, {"type": "cloze", "section": "Γ. Γραμματική – Σύνταξη", "q": "Στη φράση «Η άλλη αντίληψη είναι χειραγώγηση», η λέξη «άλλη» λειτουργεί ως επιθετικός __________.", "answers": ["προσδιορισμός", "προσδιορισμος"], "explain": "Προσδιορίζει το ουσιαστικό «αντίληψη»."}, {"type": "cloze", "section": "Γ. Γραμματική – Σύνταξη", "q": "Συμπλήρωσε με κατάλληλο ρήμα: Η εκπαίδευση __________ στην καλλιέργεια της κριτικής σκέψης.", "answers": ["στοχεύει", "στοχευει", "αποβλέπει", "αποβλεπει"], "explain": "Αποδεκτά: στοχεύει, αποβλέπει."}, {"type": "match", "section": "Γ. Γραμματική – Σύνταξη", "q": "Αντιστοίχισε την πιο καθημερινή διατύπωση με την καταλληλότερη επίσημη.", "pairs": [["παίρνουν λάθος δρόμο", "ακολουθούν λανθασμένη πορεία"], ["πάρα πολύ", "υπέρ το δέον"], ["από την αρχή", "εξ αρχής"], ["για παράδειγμα", "επί παραδείγματι"]], "explain": "Η άσκηση εξετάζει υφολογική προσαρμογή."}, {"type": "multi", "section": "Γ. Γραμματική – Σύνταξη", "q": "Επίλεξε τους σωστούς τύπους/διατυπώσεις για επίσημο ύφος.", "options": ["βασιζόταν", "υπέρ το δέον", "παρήχθη", "παίρνουν λάθος δρόμο", "υπέρ του δέοντος"], "answers": [0, 1, 2], "explain": "Οι τρεις πρώτες επιλογές είναι οι καταλληλότερες με βάση τις συγκεκριμένες γλωσσικές παρατηρήσεις."}, {"type": "mcq", "section": "Δ. Γενικές Γνώσεις", "q": "Με ποιον οργανισμό συνδέονται οι τέσσερις πυλώνες της εκπαίδευσης;", "options": ["UNESCO", "OECD", "UNICEF", "Συμβούλιο της Ευρώπης"], "answers": [0], "explain": "Οι τέσσερις πυλώνες της εκπαίδευσης συνδέονται με την UNESCO."}, {"type": "match", "section": "Δ. Γενικές Γνώσεις", "q": "Αντιστοίχισε τον πυλώνα της UNESCO με σύντομη απόδοση.", "pairs": [["μαθαίνω να γνωρίζω", "ανάπτυξη γνώσης και κατανόησης"], ["μαθαίνω να πράττω", "ικανότητα εφαρμογής γνώσεων"], ["μαθαίνω να συμβιώνω", "συνεργασία και συνύπαρξη"], ["μαθαίνω να υπάρχω", "ολόπλευρη ανάπτυξη του προσώπου"]], "explain": "Οι τέσσερις πυλώνες αποδίδουν διαφορετικές διαστάσεις της μάθησης."}, {"type": "categorize", "section": "Δ. Γενικές Γνώσεις", "q": "Κατάταξε τα μαθήματα στο trivium ή στο quadrivium.", "categories": ["Trivium", "Quadrivium"], "items": [["γραμματική", "Trivium"], ["ρητορική", "Trivium"], ["διαλεκτική/λογική", "Trivium"], ["αριθμητική", "Quadrivium"], ["γεωμετρία", "Quadrivium"], ["μουσική", "Quadrivium"], ["αστρονομία", "Quadrivium"]], "explain": "Το trivium είναι γλωσσικό/λογικό, το quadrivium μαθηματικό."}, {"type": "mcq", "section": "Δ. Γενικές Γνώσεις", "q": "Η αριστοτελική «μεσότητα» σημαίνει ότι η αρετή:", "options": ["βρίσκεται ανάμεσα στην έλλειψη και την υπερβολή", "ταυτίζεται με τον αριθμητικό μέσο όρο", "είναι πάντοτε η ηπιότερη επιλογή", "απορρίπτει κάθε μέτρο"], "answers": [0], "explain": "Η μεσότητα είναι το ορθό μέτρο ανάμεσα σε δύο ακρότητες."}, {"type": "match", "section": "Δ. Γενικές Γνώσεις", "q": "Αντιστοίχισε κάθε έννοια με τη λειτουργία της.", "pairs": [["Αναλυτικό Πρόγραμμα", "ορίζει στόχους, περιεχόμενο, μεθόδους και αξιολόγηση"], ["επαγγελματικός προσανατολισμός", "συνδέει κλίσεις, δεξιότητες και επαγγελματικές επιλογές"], ["διαπολιτισμική εκπαίδευση", "προωθεί σεβασμό στην ετερότητα"], ["φορείς αγωγής", "συμβάλλουν στη διαπαιδαγώγηση του ατόμου"]], "explain": "Οι έννοιες ανήκουν στις γενικές γνώσεις της ενότητας."}, {"type": "categorize", "section": "Δ. Γενικές Γνώσεις", "q": "Κατάταξε κάθε βαθμίδα ως σχολική/προπανεπιστημιακή ή πανεπιστημιακή.", "categories": ["Σχολική/προπανεπιστημιακή", "Πανεπιστημιακή"], "items": [["προσχολική", "Σχολική/προπανεπιστημιακή"], ["πρωτοβάθμια", "Σχολική/προπανεπιστημιακή"], ["δευτεροβάθμια", "Σχολική/προπανεπιστημιακή"], ["τριτοβάθμια", "Πανεπιστημιακή"]], "explain": "Η τριτοβάθμια αντιστοιχεί στην ανώτατη/πανεπιστημιακή εκπαίδευση."}, {"type": "multi", "section": "Δ. Γενικές Γνώσεις", "q": "Επίλεξε φορείς αγωγής.", "options": ["οικογένεια", "σχολείο", "ΜΜΕ", "κοινωνικό περιβάλλον", "χώρος εργασίας"], "answers": [0, 1, 2, 3, 4], "explain": "Η αγωγή παρέχεται από πολλούς θεσμούς και περιβάλλοντα."}, {"type": "tf", "section": "Δ. Γενικές Γνώσεις", "q": "Ο επαγγελματικός προσανατολισμός περιορίζεται στην ενημέρωση για πανεπιστημιακές σχολές.", "answer": false, "explain": "Συνδέει κλίσεις, δεξιότητες και ποικίλες επαγγελματικές επιλογές."}, {"type": "tf", "section": "Δ. Γενικές Γνώσεις", "q": "Η διαπολιτισμική εκπαίδευση στηρίζεται στον σεβασμό της ετερότητας και στη δημιουργική συνύπαρξη.", "answer": true, "explain": "Αυτός είναι βασικός της στόχος."}, {"type": "order", "section": "Δ. Γενικές Γνώσεις", "q": "Βάλε στη σωστή σειρά από τη στενότερη προς την ευρύτερη έννοια.", "items": ["κατάρτιση", "εκπαίδευση", "παιδεία"], "explain": "Η κατάρτιση είναι πιο ειδική, η εκπαίδευση θεσμικά ευρύτερη, η παιδεία η ευρύτερη καλλιέργεια."}, {"type": "order", "section": "Ε. Παράγραφος", "q": "Βάλε τα βασικά μέρη μιας τυπικής παραγράφου στη σειρά.", "items": ["θεματική περίοδος", "λεπτομέρειες/σχόλια", "κατακλείδα"], "explain": "Η τυπική δομή κινείται από κύρια ιδέα σε ανάπτυξη και ολοκλήρωση."}, {"type": "match", "section": "Ε. Παράγραφος", "q": "Αντιστοίχισε όρο με λειτουργία.", "pairs": [["συνοχή", "γλωσσική σύνδεση των προτάσεων"], ["συνεκτικότητα", "νοηματική αλληλουχία των ιδεών"], ["θεματική περίοδος", "παρουσίαση κύριας ιδέας"], ["κατακλείδα", "σύνοψη ή ολοκλήρωση νοήματος"]], "explain": "Οι όροι αφορούν τη δομή και οργάνωση της παραγράφου."}, {"type": "categorize", "section": "Ε. Παράγραφος", "q": "Κατάταξε τους δείκτες λόγου ανάλογα με τη λειτουργία τους.", "categories": ["Αντίθεση", "Παράδειγμα", "Προσθήκη"], "items": [["ωστόσο", "Αντίθεση"], ["εντούτοις", "Αντίθεση"], ["για παράδειγμα", "Παράδειγμα"], ["λόγου χάρη", "Παράδειγμα"], ["επιπλέον", "Προσθήκη"], ["παράλληλα", "Προσθήκη"]], "explain": "Οι διαρθρωτικές λέξεις δηλώνουν τη σχέση των νοημάτων."}, {"type": "tf", "section": "Ε. Παράγραφος", "q": "Η συνοχή μπορεί να ενισχυθεί με διαρθρωτικές λέξεις, αντωνυμίες και επαναλήψεις/συνώνυμα.", "answer": true, "explain": "Αυτά είναι βασικά μέσα εξωτερικής σύνδεσης."}, {"type": "cloze", "section": "Ε. Παράγραφος", "q": "Συμπλήρωσε: Η συνεκτικότητα αφορά κυρίως τη __________ αλληλουχία των ιδεών.", "answers": ["νοηματική", "νοηματικη", "λογική", "λογικη"], "explain": "Αφορά τη λογική/νοηματική οργάνωση."}]};
+let answered = new Array(QUIZ.questions.length).fill(false);
+let correct = new Array(QUIZ.questions.length).fill(false);
+
+function norm(s) {
+  return (s || '').toString().trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[’']/g,"").replace(/\s+/g,' ');
+}
+function esc(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function shuffle(a) { return [...a].sort(()=>Math.random()-.5); }
+function typeLabel(t) {
+  return {mcq:'Πολλαπλής επιλογής', multi:'Πολλαπλής απάντησης', tf:'Σωστό/Λάθος', cloze:'Συμπλήρωση', match:'Αντιστοίχιση', categorize:'Κατάταξη', order:'Σειροθέτηση'}[t] || t;
+}
+function render() {
+  const root = document.getElementById('quiz');
+  let html = '', currentSection = '';
+  QUIZ.questions.forEach((item, i) => {
+    if (item.section !== currentSection) {
+      currentSection = item.section;
+      html += `<h2 class="sectionTitle">${esc(currentSection)}</h2>`;
+    }
+    html += `<section class="panel q" id="q${i}">
+      <div class="qhead"><div class="qnum">Ερώτηση ${i+1} / ${QUIZ.questions.length}</div><div class="small">${typeLabel(item.type)}</div></div>
+      <div class="question">${esc(item.q)}</div>
+      ${renderInput(item, i)}
+      <div class="actions"><button onclick="check(${i})" id="btn${i}">Έλεγχος</button><button class="secondary" onclick="showAnswer(${i})">Δείξε απάντηση</button></div>
+      <div class="feedback" id="fb${i}"></div>
+    </section>`;
+  });
+  root.innerHTML = html; updateBar();
+}
+function renderInput(item, i) {
+  if (item.type === 'mcq') return `<div class="options">` + item.options.map((op,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}"> <span>${esc(op)}</span></label>`).join('') + `</div>`;
+  if (item.type === 'multi') return `<div class="options">` + item.options.map((op,j)=>`<label class="option"><input type="checkbox" name="q${i}" value="${j}"> <span>${esc(op)}</span></label>`).join('') + `</div>`;
+  if (item.type === 'tf') return `<div class="options"><label class="option"><input type="radio" name="q${i}" value="true"> <span>Σωστό</span></label><label class="option"><input type="radio" name="q${i}" value="false"> <span>Λάθος</span></label></div>`;
+  if (item.type === 'cloze') return `<input type="text" id="txt${i}" placeholder="Πληκτρολόγησε την απάντηση...">`;
+  if (item.type === 'match') {
+    const choices = shuffle(item.pairs.map(p=>p[1]));
+    return `<div class="match">` + item.pairs.map((p,j)=>`<div class="matchrow"><div class="term">${esc(p[0])}</div><select id="m${i}_${j}"><option value="">— επίλεξε —</option>${choices.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select></div>`).join('') + `</div>`;
+  }
+  if (item.type === 'categorize') {
+    return `<div class="cat">` + item.items.map((p,j)=>`<div class="catrow"><div class="term">${esc(p[0])}</div><select id="c${i}_${j}"><option value="">— κατηγορία —</option>${item.categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select></div>`).join('') + `</div>`;
+  }
+  if (item.type === 'order') {
+    const nums = item.items.map((_,idx)=>idx+1);
+    const scrambled = shuffle(item.items);
+    item.scrambled = scrambled;
+    return `<div class="order">` + scrambled.map((txt,j)=>`<div class="orderrow"><div class="term">${esc(txt)}</div><select id="o${i}_${j}"><option value="">— θέση —</option>${nums.map(n=>`<option value="${n}">${n}</option>`).join('')}</select></div>`).join('') + `</div><p class="small">Δήλωσε τη θέση κάθε στοιχείου στη σωστή σειρά.</p>`;
+  }
+}
+function getAnswer(item,i) {
+  if (item.type === 'mcq') { const el=document.querySelector(`input[name="q${i}"]:checked`); return el?[Number(el.value)]:[]; }
+  if (item.type === 'multi') return Array.from(document.querySelectorAll(`input[name="q${i}"]:checked`)).map(x=>Number(x.value)).sort((a,b)=>a-b);
+  if (item.type === 'tf') { const el=document.querySelector(`input[name="q${i}"]:checked`); return el ? (el.value==='true') : null; }
+  if (item.type === 'cloze') return document.getElementById(`txt${i}`).value;
+  if (item.type === 'match') return item.pairs.map((p,j)=>document.getElementById(`m${i}_${j}`).value);
+  if (item.type === 'categorize') return item.items.map((p,j)=>document.getElementById(`c${i}_${j}`).value);
+  if (item.type === 'order') return item.scrambled.map((txt,j)=>[txt, Number(document.getElementById(`o${i}_${j}`).value)]);
+}
+function isCorrect(item, ans) {
+  if (item.type === 'mcq' || item.type === 'multi') return JSON.stringify(ans) === JSON.stringify([...item.answers].sort((a,b)=>a-b));
+  if (item.type === 'tf') return ans === item.answer;
+  if (item.type === 'cloze') return item.answers.map(norm).includes(norm(ans));
+  if (item.type === 'match') return ans.every((a,j)=>a === item.pairs[j][1]);
+  if (item.type === 'categorize') return ans.every((a,j)=>a === item.items[j][1]);
+  if (item.type === 'order') {
+    return ans.every(([txt,pos]) => item.items.indexOf(txt)+1 === pos);
+  }
+  return false;
+}
+function correctText(item) {
+  if (item.type === 'mcq' || item.type === 'multi') return item.answers.map(j=>esc(item.options[j])).join(' · ');
+  if (item.type === 'tf') return item.answer ? 'Σωστό' : 'Λάθος';
+  if (item.type === 'cloze') return esc(item.answers[0]);
+  if (item.type === 'match') return item.pairs.map(p=>`${esc(p[0])} → ${esc(p[1])}`).join('<br>');
+  if (item.type === 'categorize') return item.items.map(p=>`${esc(p[0])} → ${esc(p[1])}`).join('<br>');
+  if (item.type === 'order') return item.items.map((x,j)=>`${j+1}. ${esc(x)}`).join('<br>');
+}
+function check(i) {
+  const item=QUIZ.questions[i], ans=getAnswer(item,i), ok=isCorrect(item,ans);
+  answered[i]=true; correct[i]=ok;
+  const fb=document.getElementById(`fb${i}`);
+  fb.className='feedback '+(ok?'ok':'bad');
+  fb.innerHTML = ok ? `Σωστό.<div class="explain">${esc(item.explain)}</div>` : `Όχι ακριβώς. Σωστή απάντηση:<br><b>${correctText(item)}</b><div class="explain">${esc(item.explain)}</div>`;
+  document.getElementById(`btn${i}`).textContent='Επανέλεγχος';
+  updateBar();
+}
+function showAnswer(i) {
+  const item=QUIZ.questions[i], fb=document.getElementById(`fb${i}`);
+  fb.className='feedback ok';
+  fb.innerHTML=`Απάντηση:<br><b>${correctText(item)}</b><div class="explain">${esc(item.explain)}</div>`;
+}
+function updateBar() {
+  const done=answered.filter(Boolean).length, score=correct.filter(Boolean).length;
+  document.getElementById('scoreBadge').textContent=`Σκορ: ${score}/${done}`;
+  document.getElementById('bar').style.width=`${(done/QUIZ.questions.length)*100}%`;
+  if (done === QUIZ.questions.length) {
+    const pct=Math.round(score/QUIZ.questions.length*100);
+    document.getElementById('finalBox').classList.remove('hidden');
+    document.getElementById('finalScore').textContent=`${score}/${QUIZ.questions.length} (${pct}%)`;
+    document.getElementById('finalMsg').textContent = pct>=85 ? 'Πολύ καλή επίδοση.' : pct>=70 ? 'Καλή επίδοση με λίγη επανάληψη.' : pct>=55 ? 'Μέτρια επίδοση· χρειάζεται στοχευμένη επανάληψη.' : 'Χρειάζεται επανάληψη των βασικών εννοιών.';
+  }
+}
+function resetQuiz() {
+  answered.fill(false); correct.fill(false);
+  document.getElementById('finalBox').classList.add('hidden');
+  render(); window.scrollTo({top:0, behavior:'smooth'});
+}
+render();
+</script>
+</body>
+</html>
